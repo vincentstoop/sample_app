@@ -13,4 +13,17 @@ RSpec.feature "Signup management", :type => :feature do
     click_button "Create my account"
     expect(user_count).to eq(User.count)
   end
+
+  it "allows signup with valid information" do
+    user_count = User.count
+    visit signup_path
+    fill_in "user_name", with: "Example user"
+    fill_in "user_email", with: "valid@email.com"
+    fill_in "user_password", with: "foobar"
+    fill_in "user_password_confirmation", with: "foobar"
+    click_button "Create my account"
+    expect(User.count).to eq(user_count + 1)
+
+    # expect(subject).to render_template(:show)
+  end
 end
