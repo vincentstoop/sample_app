@@ -64,4 +64,8 @@ describe User do
     expect(user).not_to be_valid
   end
 
+  it "should return false for authenticated? for a user with nil digest" do
+    expect(user.authenticated?('')).to eq(false)
+  end
+
 end
