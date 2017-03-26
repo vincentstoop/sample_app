@@ -2,6 +2,16 @@ require 'rails_helper'
 
 RSpec.feature "Signup management", :type => :feature do
   let!(:user) {build(:user)}
+
+  35.times do |n|
+    let!(("user" + (n+1).to_s).to_sym) { build(:user, id: n+2,
+                                            name: Faker::Name.name,
+                                            email: "user-#{n + 1}@example.com",
+                                            password: "password",
+                                            password_confirmation: "password")
+                                            }
+  end
+
   it "doesn't allow signup with invalid information" do
     # let user = User.new(name: "", email: "email@invalid",
                         # password: "foo", password_confirmation: "bar" )
