@@ -77,6 +77,24 @@ RSpec.describe "UsersEdits", type: :request do
       expect(user.email).to eq(email)
     end
   end
+
+  describe "UsersController" do
+    it "should redirect destroy, when user not logged in" do
+      user_count_before = User.count
+      delete user_path(user)
+      expect(subject).to redirect_to(login_path)
+      # expect(response.location).to eq(login_url)
+      expect(User.count).to eq(user_count_before)
+    end
+
+    it "should redirect destroy, when not logged in as admin" do
+      log_in_as(other_user)
+      user_count_before = User.count
+      delete user_path(user)
+      expect(User.count).to eq(user_count_before)
+      expect(subject).to redirect_to(root_url)
+    end
+  end
 end
 
 
