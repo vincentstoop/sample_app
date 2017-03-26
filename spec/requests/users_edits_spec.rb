@@ -65,6 +65,7 @@ RSpec.describe "UsersEdits", type: :request do
   describe "Not logged in user" do
     it "gets friendly forwarded to edit path upon logging in" do
       get edit_user_path(user)
+      expect(session[:forwarding_url]).not_to be_empty
       log_in_as(user)
       expect(subject).to redirect_to edit_user_path(user)
       name = "Foo Bar"
@@ -72,6 +73,7 @@ RSpec.describe "UsersEdits", type: :request do
       patch user_path(user), params: { user: { name: name, email: email } }
       expect(flash).not_to be_empty
       expect(subject).to redirect_to user
+      expect(session[:forwarding_url]).to eq(nil)
       user.reload
       expect(user.name).to eq(name)
       expect(user.email).to eq(email)
@@ -94,6 +96,16 @@ RSpec.describe "UsersEdits", type: :request do
       expect(User.count).to eq(user_count_before)
       expect(subject).to redirect_to(root_url)
     end
+
+    it "should not allow the admin attribute to be edited via the web" do
+      log_in_as(other_user)
+      expect(other_user.admin?).to eq(false)
+      patch user_path(other_user), params: { user: { name: other_user.name,
+                                           email: other_user.email,
+                                           admin: true } }
+      expect(other_user.reload.admin?).to eq(false)
+    end
+
   end
 end
 
