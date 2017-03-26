@@ -1,0 +1,99 @@
+require 'rails_helper'
+
+RSpec.describe "UsersEdits", type: :request do
+  let!(:user) {create(:user)}
+  let!(:other_user) {create(:user, id: 2, name: "Jan Smit", email: "jan@smit.nl", password: "password", password_confirmation: "password")}
+  describe "GET /user/:id/edit" do
+    it "works! (now write some real specs)" do
+      log_in_as(user)
+      get edit_user_path(user)
+      expect(response).to have_http_status(200)
+    end
+  end
+
+  describe "PATCH /user/:id/edit" do
+    describe "unsuccessful edit" do
+      it "renders the users/edit template" do
+        log_in_as(user)
+        get edit_user_path(user)
+        patch user_path(user.id, user: { name: "",
+                                          email: "foo@invalid",
+                                          password: "foo",
+                                          password_confirmation: "bar" })
+        expect(subject).to render_template("users/edit")
+      end
+    end
+
+    describe "successful edit" do
+      it "updates the user data" do
+        log_in_as(user)
+        get edit_user_path(user)
+        expect(subject).to render_template('users/edit')
+        name = "Foo Bar"
+        email = "foo@bar.com"
+        patch user_path(user.id, user: { name: name,
+                                          email: email,
+                                          password: "",
+                                          password_confirmation: "" })
+        expect(flash).not_to be_empty
+        expect(response.location).to eq(user_url(user))
+        user.reload
+        expect(user.name).to eq(name)
+        expect(user.email).to eq(email)
+      end
+    end
+  end
+
+  describe "Logged in user" do
+    it "gets redirected when trying to visit other users' edit page" do
+      log_in_as(other_user)
+      get edit_user_path(id: user)
+      expect(flash).to be_empty
+      expect(subject).to redirect_to(root_url)
+      expect(response.location).to eq(root_url)
+    end
+
+    it "gets redirected when trying to update other users' data" do
+      log_in_as(other_user)
+      patch user_path id: user, user: { name: user.name, email: user.email }
+      expect(flash).to be_empty
+      expect(subject).to redirect_to(root_url)
+      expect(response.location).to eq(root_url)
+    end
+  end
+
+  describe "Not logged in user" do
+    it "gets friendly forwarded to edit path upon logging in" do
+      get edit_user_path(user)
+      log_in_as(user)
+      expect(subject).to redirect_to edit_user_path(user)
+      name = "Foo Bar"
+      email = "foo@bar.com"
+      patch user_path(user), params: { user: { name: name, email: email } }
+      expect(flash).not_to be_empty
+      expect(subject).to redirect_to user
+      user.reload
+      expect(user.name).to eq(name)
+      expect(user.email).to eq(email)
+    end
+  end
+end
+
+
+# test "successful edit with friendly forwarding" do
+# get edit_user_path(@user)
+# log_in_as(@user)
+# assert_redirected_to edit_user_path(@user)
+# name = "Foo Bar"
+# email = "foo@bar.com"
+# patch user_path(@user), user: { name: name,
+# email: email,
+# password:
+# "foobar",
+# password_confirmation: "foobar" }
+# assert_not flash.empty?
+# assert_redirected_to @user
+# @user.reload
+# assert_equal @user.name, name
+# assert_equal @user.email, email
+# end
