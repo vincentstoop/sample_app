@@ -8,7 +8,9 @@ RSpec.feature "Signup management", :type => :feature do
                                             name: Faker::Name.name,
                                             email: "user-#{n + 1}@example.com",
                                             password: "password",
-                                            password_confirmation: "password")
+                                            password_confirmation: "password",
+                                            activated: true,
+                                            activated_at: Time.zone.now)
                                             }
   end
 
@@ -34,10 +36,6 @@ RSpec.feature "Signup management", :type => :feature do
     fill_in "user_password_confirmation", with: user.password
     click_button "Create my account"
     expect(User.count).to eq(user_count + 1)
-    # expect(page).to have_text("Welcome to the sample app, #{user.name}")
-    # expect(page.title).to eq(full_title(user.name))
-    expect(page).to have_current_path(user_path(user))
-    # click_link("Log out")
-    # expect(page).to have_current_path(root_path)
+    # expect(page).to have_current_path(user_path(user))
   end
 end

@@ -14,7 +14,9 @@ describe UsersController do
                                             name: Faker::Name.name,
                                             email: "user-#{n + 1}@example.com",
                                             password: "password",
-                                            password_confirmation: "password")
+                                            password_confirmation: "password",
+                                            activated: true,
+                                            activated_at: Time.zone.now)
                                             }
   end
   describe "Not logged in user" do

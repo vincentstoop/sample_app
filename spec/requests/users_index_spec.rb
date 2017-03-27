@@ -8,7 +8,9 @@ RSpec.describe "UsersIndex", type: :request do
                                             name: Faker::Name.first_name,
                                             email: "user-#{n + 1}@example.com",
                                             password: "password",
-                                            password_confirmation: "password")
+                                            password_confirmation: "password",
+                                            activated: true,
+                                            activated_at: Time.zone.now)
                                             }
   end
 
