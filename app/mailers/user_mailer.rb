@@ -7,10 +7,8 @@ class UserMailer < ApplicationMailer
   #
   def account_activation(user)
     @user = user
-    delivery_options = { user_name: "vincent@stoop.nl",
-                         password: "bN<k3i3H",
-                         address: "web102.your-webhost.nl" }
-    mail to: user.email, subject: "Account activation", delivery_method_options: delivery_options
+
+    mail to: user.email, subject: "Account activation", delivery_method_options: @delivery_options
   end
 
   # Subject can be set in your I18n file at config/locales/en.yml
