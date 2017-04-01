@@ -14,7 +14,11 @@ Rails.application.configure do
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
   config.action_mailer.default_url_options = { host: 'sample-vin.herokuapp.com' }
-
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = { user_name: "vincent@stoop.nl",
+                        password: "bN<k3i3H",
+                        address: "web102.your-webhost.nl" }
   # Attempt to read encrypted secrets from `config/secrets.yml.enc`.
   # Requires an encryption key in `ENV["RAILS_MASTER_KEY"]` or
   # `config/secrets.yml.key`.
